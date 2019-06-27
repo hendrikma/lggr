@@ -13,8 +13,8 @@
 
 
 -- Exportiere Datenbank Struktur für lggr
-CREATE DATABASE IF NOT EXISTS `lggr` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `lggr`;
+CREATE DATABASE IF NOT EXISTS `DB_NAME` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `DB_NAME`;
 
 -- Exportiere Struktur von View lggr.archived
 -- Erstelle temporäre Tabelle um View Abhängigkeiten zuvorzukommen
