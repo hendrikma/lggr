@@ -309,7 +309,7 @@ if ($state->isFromTo()) {
 ?>
 </div>
 
-                            <form action="do.php" method="post"
+                            <form action="./do.php" method="post"
                                 id="tsfromto">
                                 <input type="hidden" name="a"
                                     value="fromto"> <input type="text"

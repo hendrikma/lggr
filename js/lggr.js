@@ -11,7 +11,7 @@ $('div.datablock').on('click', 'span.lggr-archived', function() {
 	$(this).removeClass('lggr-archived glyphicon-warning-sign');
 	var sID = $(this).parents('.row').attr('data-id');
 	$.ajax({
-		url: '/do.php?a=unarchive',
+		url: './do.php?a=unarchive',
 		method: 'POST',
 		data: {id: sID}
 	}).done(function(sReplyID) {
@@ -22,7 +22,7 @@ $('div.datablock').on('click', 'span.lggr-notarchived', function() {
 	$(this).removeClass('lggr-notarchived glyphicon-pushpin');
 	var sID = $(this).parents('.row').attr('data-id');
 	$.ajax({
-		url: '/do.php?a=archive',
+		url: './do.php?a=archive',
 		method: 'POST',
 		data: {id: sID}
 	}).done(function(sReplyID) {

@@ -19,9 +19,9 @@ if (isset($_SESSION[LggrState::SESSIONNAME])) {
 } // if
 
 $aColors = array(
-    'emerg' => COLORALERT,
-    'crit' => COLORALERT,
-    'err' => COLORALERT,
+    'emerg' => '#'.COLORALERT,
+    'crit' => '#'.COLORALERT,
+    'err' => '#'.COLORALERT,
     'warning' => '#f0ad4e',
     'notice' => '#337ab7',
     'info' => '#5cb85c'
@@ -81,41 +81,53 @@ var dataServers = {
 	} ]
 };
 
-var dataLevels = [
+var dataLevels = {
+    datasets: [{
+        data: [
 <?php
 foreach ($aLevels as $level) {
     $newVal = round(log($level->c));
     $newCol = $aColors[$level->level];
-    echo <<<EOL
-    {
-        value: $newVal,
-        color: "$newCol",
-        label: "{$level->level}",
-    },
-
-EOL;
+    echo "{$newVal}, ";
 } // foreach
 ?>
-];
+        ],
+        backgroundColor: [
+<?php
+foreach ($aLevels as $level) {
+    $newCol = $aColors[$level->level];
+    echo "'{$newCol}', ";
+} // foreach
+?>
+        ]
+    }],
+    labels: [
+<?php
+foreach ($aLevels as $level) {
+    echo "'{$level->level}', ";
+} // foreach
+?>
+    ]
+};
 
-var dataServersPie = [
+var dataServersPie = {
+    datasets: [{
+        data: [
 <?php
 foreach ($aServers as $server) {
-    $sHash = md5($server->host);
-    $cHash = $sHash[0] . '0' . $sHash[1] . '0' . $sHash[2] . '0';
-    $cHashHigh = $sHash[0] . 'f' . $sHash[1] . 'f' . $sHash[2] . 'f';
-    echo <<<EOL
-    {
-        value: {$server->c},
-        color: "#$cHash",
-        highlight: "#$cHashHigh",
-        label: "{$server->host}"
-    },
-
-EOL;
+    echo $server->c . ",";
 } // foreach
 ?>
-];
+        ]
+    }],
+    labels: [
+<?php
+foreach ($aServers as $server) {
+    echo "'{$server->host}',";
+}
+?>
+    ]
+};
 
 
 var dataCloudWords = [

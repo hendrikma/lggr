@@ -2,5 +2,6 @@ t.php
 cache/key_*
 test/*
 test/
+doc/
 contrib/*
 *.bak

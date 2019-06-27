@@ -14,7 +14,7 @@ foreach ($aPerf as $perf) {
 $pTime = round($pTime, 4);
 
 if (isset($_COOKIE['PHPSESSID'])) {
-    $dbgsession = $_COOKIE['PHPSESSID'];
+    $dbgsession = htmlentities($_COOKIE['PHPSESSID']);
 } else {
     $dbgsession = '-';
 } // if
