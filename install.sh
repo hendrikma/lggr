@@ -1,57 +1,101 @@
 #!/bin/bash
 # Install Script
+#Todo: testen, remote sql noch nicht ganz fertig (mysql commands gehen alle noch auf lokal
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 DB_NAME="pihole-logger"
+DB_IP="localhost"
+
+#Lookup your timezone here: https://www.php.net/manual/en/timezones.php
+PHP_TIMEZONE=Europe/Berlin
+#PHP_TIMEZONE=America/New_York
+
+USER_LOGGER="logger2"
 PW_LOGGER="MyLoggerPW"
+
+USER_LOGVIEWER="logviewer2"
 PW_LOGVIEWER="MyLogViewerPW"
+
+USER_LOGGERADMIN="loggeradmin2"
 PW_LOGGERADMIN="MyloggeradminPW"
 
 LOGGER_LOCALE="en_US"
 
-ENABLE_BASICAUTH=false
+# Comments the BasicAuth part from checkSecurity() function in ./inc/lggr_class
+# Enabling this removes BasicAuth requirement
+ENABLE_BASICAUTH=enable
 
 #export SYSLOG_SERVER="192.168.1.10"
-SYSLOG_SERVER="0.0.0.0"
-
-DB_IP="localhost"
-
-SYSLOG_CONF=/etc/syslog-ng/syslog-ng.conf
 #export SYSLOG_CONF=/etc/syslog-ng/conf.d/99-logger.conf
-
+SYSLOG_SERVER="0.0.0.0"
+SYSLOG_CONF=/etc/syslog-ng/syslog-ng.conf
 
 
 #--------------------------------------------------------------------------------------------
-sed -i "s|DB_NAME|$DB_NAME|g" ./doc/db.sql
-sed -i "s|DB_NAME|$DB_NAME|g" ./doc/user.sql
+#Check if Packagename e.g. mysql (param1) installed
+function PKG_OK {
+dpkg-query -W --showformat='${Status}\n' "$1"|grep "install ok installed"
+}
+#string to concate missing packages to
+PKG_INSTALL=""
 #--------------------------------------------------------------------------------------------
-sed -i "s|PW_LOGGER|$PW_LOGGER" ./doc/user.sql
-sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER" ./doc/user.sql
-sed -i "s|PW_LOGGERADMIN|$PW_LOGGERADMIN" ./doc/user.sql
+if [ ! "$(PKG_OK "apache2")" ]
+then
+  $PKG_INSTALL="${PKG_INSTALL}apache2"
+fi
+if [ ! "$(PKG_OK "php")" ]
+then
+  $PKG_INSTALL="${PKG_INSTALL}php php-mysql"
+fi
+string=$(php -r "echo PHP_VERSION;")
+php_version="${string:0:3}"
+sed  -i "s|date.timezone =.*|date.timezone = Europe/Berlin" /etc/php/$php_version/cli/php.ini
+
 #--------------------------------------------------------------------------------------------
-sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER" ./inc/config_class.php
-sed -i "s|DB_NAME|$DB_NAME|g"
+sed -i "s|DB_NAME|$DB_NAME|g" $DIR/doc/db.sql
+sed -i "s|DB_NAME|$DB_NAME|g" $DIR/doc/user.sql
+#--------------------------------------------------------------------------------------------
+sed -i "s|USER_LOGGER|$USER_LOGGER|" $DIR/doc/user.sql
+sed -i "s|USER_LOGVIEWER|$USER_LOGVIEWER|" $DIR/doc/user.sql
+sed -i "s|USER_LOGGERADMIN|$USER_LOGGERADMIN|" $DIR/doc/user.sql
+sed -i "s|DB_IP|$DB_IP|" $DIR/doc/user.sql
+
+sed -i "s|PW_LOGGER|$PW_LOGGER|" $DIR/doc/user.sql
+sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER|" $DIR/doc/user.sql
+sed -i "s|PW_LOGGERADMIN|$PW_LOGGERADMIN|" $DIR/doc/user.sql
+#--------------------------------------------------------------------------------------------
+sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER" $DIR/inc/config_class.php
+sed -i "s|DB_NAME|$DB_NAME|g" $DIR/inc/config_class.php
+sed -i "s|USER_LOGVIEWER|$USER_LOGVIEWER|g" $DIR/inc/config_class.php
 
 # Set your preferred language en_US, de_DE, or pt_BR
-sed -i "s|en_US|$LOGGER_LOCALE" ./inc/config_class.php
+sed -i "s|en_US|$LOGGER_LOCALE|" $DIR/inc/config_class.php
 #--------------------------------------------------------------------------------------------
-sed -i "s|PW_LOGGERADMIN|$PW_LOGGERADMIN" ./inc/adminconfig_class.php
-sed -i "s|DB_NAME|$DB_NAME|g"./inc/adminconfig_class.php
+sed -i "s|PW_LOGGERADMIN|$PW_LOGGERADMIN|" $DIR/inc/adminconfig_class.php
+sed -i "s|DB_NAME|$DB_NAME|" $DIR/inc/adminconfig_class.php
+sed -i "s|USER_LOGGERADMIN|$USER_LOGGERADMIN|" $DIR/inc/adminconfig_class.php
+
 #--------------------------------------------------------------------------------------------
-# Remove BasicAuth part from checkSecurity()
 if [ $ENABLE_BASICAUTH = false ]
-sed -i '52,54 s/^/#/' ./inc/lggr_class.php
+then
+  sed -i '52,54 s/^/#/' $DIR/inc/lggr_class.php
 fi
 #--------------------------------------------------------------------------------------------
-systemctl start mysql.service
+
 if [ systemctl is-active mysql ] ; then 
-mysql $DB_NAME < ./doc/db.sql
-mysql $DB_NAME < ./doc/user.sql
+  mysql $DB_NAME < $DIR/doc/db.sql
+  mysql $DB_NAME < $DIR/doc/user.sql
+else
+  systemctl start mysql.service
+  sleep 15
+  mysql $DB_NAME < $DIR/doc/db.sql
+  mysql $DB_NAME < $DIR/doc/user.sql  
 fi
 
 if [ -f /etc/debian_verison]
-echo 'SYSLOGNG_OPTS="-–no-caps"' >> /etc/default/syslog-ng
+then
+  echo 'SYSLOGNG_OPTS="-–no-caps"' >> /etc/default/syslog-ng
 fi
 
 # Install syslog-ng config
@@ -100,9 +144,9 @@ destination d_newmysql {
     session-statements("SET NAMES utf8")
     batch_lines(10)
     batch_timeout(5000)
-    local_time_zone("Europe/Berlin")
+    local_time_zone("PHP_TIMEZONE")
     type(mysql)
-    username("logger")
+    username("USER_LOGGER")
     password("PW_LOGGER")
     database("DB_NAME")
     host("DB_IP")
@@ -113,21 +157,28 @@ destination d_newmysql {
     );
 };
 
+#Filter example
+#Rule removes annyoing seafile message
+filter annyoingmessages {
+match("size-sched.c(96): Repo size compute queue size is 0");
+
+};
+
+
 log {
-#    source(s_net);
+    source(s_net);
     source(s_local);
 	destination(d_newmysql);
 };
 ' > $SYSLOG_CONF
 
-
-
-
-
 sed -i "s|SYSLOG_SERVER|$SYSLOG_SERVER" $SYSLOG_CONF
+sed -i "s|USER_LOGGER|$USER_LOGGER" $SYSLOG_CONF
 sed -i "s|PW_LOGGER|$PW_LOGGER" $SYSLOG_CONF
 sed -i "s|DB_NAME|$DB_NAME" $SYSLOG_CONF
 sed -i "s|DB_IP|$DB_IP" $SYSLOG_CONF
+sed -i "s|PHP_TIMEZONE|$PHP_TIMEZONE" $SYSLOG_CONF
+
 
 #systemctl start apache2.service
 #sleep 60
