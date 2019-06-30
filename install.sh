@@ -4,7 +4,7 @@
 
 export DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-export DB_NAME="logger-pihole"
+export DB_NAME="logger"
 export DB_IP="localhost"
 
 # Comments the BasicAuth part from checkSecurity() function in ./inc/lggr_class
@@ -17,13 +17,13 @@ export ENABLE_VERBOSE=false
 #If set to true, script will drop existing user and database
 export ENABLE_DROPDB=false
 
-export USER_LOGGER="logger2"
+export USER_LOGGER="logger"
 export PW_LOGGER="JabraPro88"
 
-export USER_LOGVIEWER="logviewer2"
+export USER_LOGVIEWER="logviewer"
 export PW_LOGVIEWER="JabraPro88"
 
-export USER_ADMINLOGGER="loggeradmin2"
+export USER_ADMINLOGGER="loggeradmin"
 export PW_ADMINLOGGER="JabraPro88"
 
 export LOGGER_LOCALE="de_DE"

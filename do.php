@@ -7,7 +7,7 @@ spl_autoload_register(
 session_start();
 
 if (! isset($_REQUEST['a'])) {
-    header('Location: index.php');
+    header('Location: ./index.php');
     exit();
 } // if
 
@@ -129,6 +129,6 @@ if ($isAjax) {
     header('Content-Type: text/plain');
     echo $sAjaxReply;
 } else {
-    header('Location: index.php');
+    header('Location: ./index.php');
 } // if
 
