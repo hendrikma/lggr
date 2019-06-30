@@ -65,7 +65,7 @@ sed -i "s|PW_LOGGER|$PW_LOGGER|" $DIR/doc/user.sql
 sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER|" $DIR/doc/user.sql
 sed -i "s|PW_LOGGERADMIN|$PW_LOGGERADMIN|" $DIR/doc/user.sql
 #--------------------------------------------------------------------------------------------
-sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER" $DIR/inc/config_class.php
+sed -i "s|PW_LOGVIEWER|$PW_LOGVIEWER|" $DIR/inc/config_class.php
 sed -i "s|DB_NAME|$DB_NAME|g" $DIR/inc/config_class.php
 sed -i "s|USER_LOGVIEWER|$USER_LOGVIEWER|g" $DIR/inc/config_class.php
 
