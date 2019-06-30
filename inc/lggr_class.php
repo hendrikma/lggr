@@ -512,7 +512,7 @@ GROUP BY h";
         
         $sql = "
 SELECT COUNT(*) AS cnt
-FROM Archived
+FROM archived
 ";
         
         $a = $this->cache->retrieve('archivedstats');
