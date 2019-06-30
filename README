@@ -2,7 +2,7 @@ Changes in this Fork:
 
 - Bumped up install.sh for easier setup
 - Fixed some bugs
-- Using only local lson-libs. All online-jsonlibs ressources have been commented out. Scripts can be found under the contrib folder
+- Using only local lson-libs, because i get a bunch of errors in Browsers web-devtools. I assume some scripts are down/broken. So all online-jsonlibs ressources have been commented out. Scripts can be found under the contrib folder. The ressource of this scripts: https://lggr.io/wp-content/uploads/2015/06/lggr_contrib.tar.gz
 - Fixed some bugs, which only occur if using local libs
 - Setting default pid to 9999 if no pid is provided
 
