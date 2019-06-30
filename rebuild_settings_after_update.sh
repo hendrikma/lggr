@@ -8,7 +8,7 @@ PW_LOGGER="MyLoggerPW"
 USER_LOGVIEWER="logviewer2"
 PW_LOGVIEWER="MyLogViewerPW"
 
-USER_LOGGERADMIN="loggeradmin2"
+USER_ADMINLOGGER="loggeradmin2"
 PW_LOGGERADMIN="MyloggeradminPW"
 
 LOGGER_LOCALE="en_US"
@@ -23,5 +23,5 @@ sed -i "s|lang="en"|$LOGGER_LOCALE|" $DIR/inc/config_class.php
 #--------------------------------------------------------------------------------------------
 sed -i "s|PW_LOGGERADMIN|$PW_LOGGERADMIN|" $DIR/inc/adminconfig_class.php
 sed -i "s|DB_NAME|$DB_NAME|" $DIR/inc/adminconfig_class.php
-sed -i "s|USER_LOGGERADMIN|$USER_LOGGERADMIN|" $DIR/inc/adminconfig_class.php
+sed -i "s|USER_ADMINLOGGER|$USER_ADMINLOGGER|" $DIR/inc/adminconfig_class.php
 
