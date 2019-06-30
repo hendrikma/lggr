@@ -1,4 +1,13 @@
+Changes in this Fork:
 
+- Bumped up install.sh for easier setup
+- Fixed some bugs
+- Using only local lson-libs. All online-jsonlibs ressources have been commented out. Scripts can be found under the contrib folder
+- Fixed some bugs, which only occur if using local libs
+
+
+
+------------------------------------------------------------------------------------------------------
 https://lggr.io/ - The web based syslog gui
 
 Fast
