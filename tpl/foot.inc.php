@@ -35,7 +35,7 @@ if (isset($_SERVER['REMOTE_USER'])) {
 <!-- /container -->
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="<?=$config->getUrlJquery()?>jquery-1.11.3.min.js"></script>
+<script src="<?=$config->getUrlJquery()?>jquery-3.4.1.min.js"></script>
 <script src="<?=$config->getUrlJqueryui()?>jquery-ui.min.js"></script>
 <script
     src="<?=$config->getUrlJAtimepicker()?>jquery-ui-timepicker-addon.min.js"></script>
