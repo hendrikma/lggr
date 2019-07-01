@@ -10,6 +10,7 @@ export DB_IP="localhost"
 # Comments the BasicAuth part from checkSecurity() function in ./inc/lggr_class
 # Enabling this removes BasicAuth requirement
 export ENABLE_BASICAUTH=true
+export ENABLE_BASICAUTH_FILE=/var/www/webuser
 
 #verbose - more output
 export ENABLE_VERBOSE=false
@@ -18,13 +19,13 @@ export ENABLE_VERBOSE=false
 export ENABLE_DROPDB=false
 
 export USER_LOGGER="logger"
-export PW_LOGGER="JabraPro88"
+export PW_LOGGER="MyLoggerPW"
 
 export USER_LOGVIEWER="logviewer"
-export PW_LOGVIEWER="JabraPro88"
+export PW_LOGVIEWER="MyLogViewerPW"
 
 export USER_ADMINLOGGER="loggeradmin"
-export PW_ADMINLOGGER="JabraPro88"
+export PW_ADMINLOGGER="MyloggeradminPW"
 
 export LOGGER_LOCALE="de_DE"
 
@@ -65,11 +66,13 @@ sed -i "s|PW_LOGGERADMIN|$PW_ADMINLOGGER|" $DIR/inc/adminconfig_class.php
 sed -i "s|DB_NAME|$DB_NAME|" $DIR/inc/adminconfig_class.php
 sed -i "s|USER_ADMINLOGGER|$USER_ADMINLOGGER|" $DIR/inc/adminconfig_class.php
 #--------------------------------------------------------------------------------------------
-if [ $ENABLE_BASICAUTH = true ]
+if [ $ENABLE_BASICAUTH = false ]
 then
   sed -i '52,54 s/^/#/' $DIR/inc/lggr_class.php
 else
   sed -i '52,54 s/^#//' $DIR/inc/lggr_class.php
+  sed "s|AuthUserFile.*|AuthUserFile    $ENABLE_BASICAUTH_FILE"
+  htpasswd -c "$ENABLE_BASICAUTH_FILE" "$USER_LOGGER"
 fi
 #--------------------------------------------------------------------------------------------
 if ! grep -q no-caps "/etc/default/syslog-ng" ;
@@ -121,11 +124,7 @@ then
 fi
 
 a2enmod headers expires 
-ENABLE_BASICAUTH=false
-
-if [ $ENABLE_BASICAUTH=true ] then
 a2enmod auth_basic
-fi
 
 # Restart Apache after enabling modules
 systemctl restart apache2
@@ -163,7 +162,3 @@ fi
 
 #systemctl start apache2.service
 #sleep 60
-
-
-
-
