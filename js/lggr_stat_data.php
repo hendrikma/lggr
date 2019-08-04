@@ -10,7 +10,7 @@ $searchvalue = '';
 
 session_start();
 
-define('COLORALERT', '#d9534f');
+define('COLORALERT', 'd9534f');
 
 if (isset($_SESSION[LggrState::SESSIONNAME])) {
     $state = $_SESSION[LggrState::SESSIONNAME];
