@@ -1,21 +1,21 @@
 FROM debian:stable
-MAINTAINER Kai Kretschmann
+#For use with docker on ARM (like Raspberry Pi)
+#FROM arm32v7/debian:stable
 
-#RUN apt-get update -y
-RUN apt-get install -y mysql-server apache2 php-mysql php-gd
-RUN a2enmod rewrite
-RUN a2enmod headers
-RUN service apache2 restart
+RUN apt-get update -y
+RUN apt-get install -y cron locales nano default-mysql-server libdbd-mysql apache2 php7.3 php-mysql php-redis redis-server syslog-ng git wget
+RUN a2enmod rewrite expires headers
 
-ADD install.sh /
-RUN chmod 755 /install.sh
+RUN rm -rf /var/www/html && git clone https://github.com/burnbabyburn/lggr.git /var/www/html
 
-EXPOSE 80
+WORKDIR /var/www/html
+RUN wget https://lggr.io/wp-content/uploads/2015/06/lggr_contrib.tar.gz
+RUN tar xvfz lggr_contrib.tar.gz && rm lggr_contrib.tar*
+RUN chown www-data:www-data /var/www/html/cache/
+RUN mv ./install.sh /install.sh && chmod 755 /install.sh
+
+EXPOSE 80 514/udp
+
+RUN service apache2 restart && service mysql restart && service redis-server restart && service syslog-ng restart && service cron restart
 
 CMD ["/bin/bash", "/install.sh"]
-
-# docker build -t lggr/test .
-# docker run -p 4000:80 lggr/test
-# docker container rm cea8...
-# docker container rm lggr/test
-#
