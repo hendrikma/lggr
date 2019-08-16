@@ -9,8 +9,9 @@ RUN a2enmod rewrite expires headers
 RUN rm -rf /var/www/html && git clone https://github.com/burnbabyburn/lggr.git /var/www/html
 
 WORKDIR /var/www/html
-RUN wget https://lggr.io/wp-content/uploads/2015/06/lggr_contrib.tar.gz
-RUN tar xvfz lggr_contrib.tar.gz && rm lggr_contrib.tar*
+# Durch die Updates in ./contrib ist das hier wohl obsolet geworden ;)
+#RUN wget https://lggr.io/wp-content/uploads/2015/06/lggr_contrib.tar.gz
+#RUN tar xvfz lggr_contrib.tar.gz && rm lggr_contrib.tar*
 RUN chown www-data:www-data /var/www/html/cache/
 RUN mv ./install.sh /install.sh && chmod 755 /install.sh
 
